@@ -4,9 +4,11 @@ import connectToDb from "./config/db";
 import { Request, Response } from "express";
 import { noteModel } from "./models/noteModel";
 import express from "express"
+import cors from "cors"
 
 connectToDb();
 app.use(express.json());
+app.use(cors());
 
 interface notesBodyInterface{
     title: string
