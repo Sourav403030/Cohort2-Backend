@@ -41,6 +41,16 @@ const Card = () => {
     });
   }
 
+  function updateNote(id: string): void{
+    axios.patch(`http://localhost:3000/api/notes/${id}`, {
+    })
+    .then((res)=>{
+      console.log(res);
+      setTitle(res.data.notes.title);
+      setDescription(res.data.notes.description);
+    })
+  }
+
   useEffect(() => {
     getNotesData();
   }, []);
@@ -106,7 +116,7 @@ const Card = () => {
                 <h3>
                   <i onClick={()=>deleteNote(note._id)} className="ri-delete-bin-line text-white flex items-center justify-center w-10 h-10 bg-red-500 rounded-full cursor-pointer"></i>
                 </h3>
-                <i className="ri-pencil-fill text-white flex items-center justify-center w-10 h-10 bg-black rounded-full cursor-pointer"></i>
+                <i onClick={()=>updateNote(note._id)} className="ri-pencil-fill text-white flex items-center justify-center w-10 h-10 bg-black rounded-full cursor-pointer"></i>
               </div>
             </div>
           );

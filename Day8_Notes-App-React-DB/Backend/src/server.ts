@@ -26,6 +26,18 @@ app.post("/api/notes", async (req: Request, res: Response)=>{
     })
 })
 
+app.get("/api/note/:id", async(req: Request, res: Response)=>{
+    const {id} = req.params;
+
+    let note = await noteModel.findById(id);
+
+    res.status(200).json({
+        message: "Note fetched successfully", 
+        note
+    })
+
+})
+
 app.get("/api/notes", async (req: Request, res: Response)=>{
     let notes = await noteModel.find();
     res.status(200).json({
@@ -37,10 +49,11 @@ app.patch("/api/notes/:id", async (req: Request, res: Response)=>{
     const {id} = req.params
     const {title, description} : notesBodyInterface = req.body;
 
-    await noteModel.findByIdAndUpdate(id, {title, description});
+    let notes = await noteModel.findByIdAndUpdate(id, {title, description});
 
     res.status(200).json({
-        message: "Note updated successfully"
+        message: "Note updated successfully",
+        notes
     })
 })
 
