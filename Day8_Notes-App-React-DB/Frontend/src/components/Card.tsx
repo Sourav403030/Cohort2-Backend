@@ -17,7 +17,7 @@ const Card = () => {
 
   function getNotesData(): void {
     axios
-      .get("http://localhost:3000/api/notes")
+      .get("/api/notes")
       .then((res) => setNotes(res.data.notes));
   }
 
@@ -30,7 +30,7 @@ const Card = () => {
     } else {
       // Create new note
       axios
-        .post("http://localhost:3000/api/notes", {
+        .post("/api/notes", {
           title,
           description,
         })
@@ -43,14 +43,14 @@ const Card = () => {
   }
 
   function deleteNote(id: string): void{
-    axios.delete(`http://localhost:3000/api/notes/${id}`)
+    axios.delete(`/api/notes/${id}`)
     .then(()=>{
       getNotesData();
     });
   }
 
   function getNoteForUpdating(id: string): void{
-    axios.get(`http://localhost:3000/api/note/${id}`)
+    axios.get(`/api/note/${id}`)
     .then((res)=>{
       console.log(res);
       setTitle(res.data.note.title);
@@ -60,7 +60,7 @@ const Card = () => {
   }
 
   function updateNotes(id: string): void{
-    axios.patch(`http://localhost:3000/api/notes/${id}`,{
+    axios.patch(`/api/notes/${id}`,{
       title,
       description
     })
