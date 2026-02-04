@@ -13,6 +13,7 @@ const Card = () => {
   const [notes, setNotes] = useState<Note[]>([]);
   const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
+  const [editingId, setEditingId] = useState<string | null>(null);
 
   function getNotesData(): void {
     axios
@@ -20,18 +21,25 @@ const Card = () => {
       .then((res) => setNotes(res.data.notes));
   }
 
-  function createNotes(e: React.SubmitEvent<HTMLFormElement>): void {
+  function createOrUpdateNote(e: React.FormEvent<HTMLFormElement>): void {
     e.preventDefault();
-    axios
-      .post("http://localhost:3000/api/notes", {
-        title,
-        description,
-      })
-      .then(() => {
-        setTitle("");
-        setDescription("");
-        getNotesData();
-      });
+    
+    if (editingId) {
+      // Update existing note
+      updateNotes(editingId);
+    } else {
+      // Create new note
+      axios
+        .post("http://localhost:3000/api/notes", {
+          title,
+          description,
+        })
+        .then(() => {
+          setTitle("");
+          setDescription("");
+          getNotesData();
+        });
+    }
   }
 
   function deleteNote(id: string): void{
@@ -41,13 +49,27 @@ const Card = () => {
     });
   }
 
-  function updateNote(id: string): void{
-    axios.patch(`http://localhost:3000/api/notes/${id}`, {
+  function getNoteForUpdating(id: string): void{
+    axios.get(`http://localhost:3000/api/note/${id}`)
+    .then((res)=>{
+      console.log(res);
+      setTitle(res.data.note.title);
+      setDescription(res.data.note.description);
+      setEditingId(id); // Set editing mode
+    })
+  }
+
+  function updateNotes(id: string): void{
+    axios.patch(`http://localhost:3000/api/notes/${id}`,{
+      title,
+      description
     })
     .then((res)=>{
       console.log(res);
-      setTitle(res.data.notes.title);
-      setDescription(res.data.notes.description);
+      setTitle("");
+      setDescription("");
+      setEditingId(null); // Exit editing mode
+      getNotesData(); // Refresh notes list
     })
   }
 
@@ -67,7 +89,7 @@ const Card = () => {
     <div>
       <form
         className="text-white flex justify-center mb-10 gap-10"
-        onSubmit={createNotes}
+        onSubmit={createOrUpdateNote}
       >
         <div className="flex gap-5 items-center">
           <label className="font-semibold text-lg" htmlFor="title">
@@ -97,8 +119,21 @@ const Card = () => {
           />
         </div>
         <button className="px-6 rounded-xl bg-blue-400 cursor-pointer font-semibold">
-          Submit
+          {editingId ? "Update" : "Submit"}
         </button>
+        {editingId && (
+          <button 
+            type="button"
+            onClick={() => {
+              setTitle("");
+              setDescription("");
+              setEditingId(null);
+            }}
+            className="px-6 rounded-xl bg-gray-400 cursor-pointer font-semibold"
+          >
+            Cancel
+          </button>
+        )}
       </form>
       <div className="flex flex-wrap gap-7">
         {notes.map((note, idx) => {
@@ -116,7 +151,7 @@ const Card = () => {
                 <h3>
                   <i onClick={()=>deleteNote(note._id)} className="ri-delete-bin-line text-white flex items-center justify-center w-10 h-10 bg-red-500 rounded-full cursor-pointer"></i>
                 </h3>
-                <i onClick={()=>updateNote(note._id)} className="ri-pencil-fill text-white flex items-center justify-center w-10 h-10 bg-black rounded-full cursor-pointer"></i>
+                <i onClick={()=>getNoteForUpdating(note._id)} className="ri-pencil-fill text-white flex items-center justify-center w-10 h-10 bg-black rounded-full cursor-pointer"></i>
               </div>
             </div>
           );
