@@ -9,6 +9,7 @@ import cors from "cors"
 connectToDb();
 app.use(express.json());
 app.use(cors());
+app.use(express.static("./public"))
 
 interface notesBodyInterface{
     title: string
