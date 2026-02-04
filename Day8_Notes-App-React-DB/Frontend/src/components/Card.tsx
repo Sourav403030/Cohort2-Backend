@@ -17,7 +17,7 @@ const Card = () => {
 
   function getNotesData(): void {
     axios
-      .get("/api/notes")
+      .get("https://cohort2-backend-mgpb.onrender.com/api/notes")
       .then((res) => setNotes(res.data.notes));
   }
 
@@ -30,7 +30,7 @@ const Card = () => {
     } else {
       // Create new note
       axios
-        .post("/api/notes", {
+        .post("https://cohort2-backend-mgpb.onrender.com/api/notes", {
           title,
           description,
         })
@@ -43,14 +43,14 @@ const Card = () => {
   }
 
   function deleteNote(id: string): void{
-    axios.delete(`/api/notes/${id}`)
+    axios.delete(`https://cohort2-backend-mgpb.onrender.com/api/notes/${id}`)
     .then(()=>{
       getNotesData();
     });
   }
 
   function getNoteForUpdating(id: string): void{
-    axios.get(`/api/note/${id}`)
+    axios.get(`https://cohort2-backend-mgpb.onrender.com/api/note/${id}`)
     .then((res)=>{
       console.log(res);
       setTitle(res.data.note.title);
@@ -60,7 +60,7 @@ const Card = () => {
   }
 
   function updateNotes(id: string): void{
-    axios.patch(`/api/notes/${id}`,{
+    axios.patch(`https://cohort2-backend-mgpb.onrender.com/api/notes/${id}`,{
       title,
       description
     })
