@@ -34,6 +34,13 @@ const Card = () => {
       });
   }
 
+  function deleteNote(id: string): void{
+    axios.delete(`http://localhost:3000/api/notes/${id}`)
+    .then(()=>{
+      getNotesData();
+    });
+  }
+
   useEffect(() => {
     getNotesData();
   }, []);
@@ -97,7 +104,7 @@ const Card = () => {
               </div>
               <div className="bottom flex justify-between items-center">
                 <h3>
-                  <i className="ri-delete-bin-line text-white flex items-center justify-center w-10 h-10 bg-red-500 rounded-full cursor-pointer"></i>
+                  <i onClick={()=>deleteNote(note._id)} className="ri-delete-bin-line text-white flex items-center justify-center w-10 h-10 bg-red-500 rounded-full cursor-pointer"></i>
                 </h3>
                 <i className="ri-pencil-fill text-white flex items-center justify-center w-10 h-10 bg-black rounded-full cursor-pointer"></i>
               </div>
